@@ -34,6 +34,10 @@ Currently, this project only intends to implement secret sharing for one cut-ver
 - [ ] Implement primitives as classes. For example, make a class `SecretSharingPrimive` that inherits from `ig.Graph`. I think this may be a better way to organize things.
 - [ ] Determine scope of analysis. If we are working with very large networks, we may want to use a library with better performance. For example, `Graph-tool` or `Networkit`. Likely unnecessary. See [NetworkToolsBrainstorm.md](NetworkToolsBrainstorm.md)
 
+## GitHub
+
+See https://github.com/timjtorres/Key-Dissemination-Simulation for the latest updates.
+
 ## Sources
 
 1. Michael Langberg, Michelle Efros, "Characterizing positive-rate key-cast (and multicast network coding) with eavesdropping nodes", arXiv:2407.01703v1 [cs.IT], 2024.

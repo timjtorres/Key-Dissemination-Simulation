@@ -2,7 +2,7 @@
 
 | ![](images/small_network_with_alt_path.png) |
 |:--:|
-| Figure1: Network G with alternating path (in bold) for `source=0` and `target=10`. Graph H is used to find the alternating. **Note**: Vertex numbering for graph G and H are not correlated. |
+| Figure 1: Network G with alternating path (in bold) for `source=0` and `target=10`. Graph H is used to find a alternating path. **Note**: Vertex numbering for graph G and H are not correlated. |
 
 ## Introduction
 

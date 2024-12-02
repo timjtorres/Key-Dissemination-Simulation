@@ -109,10 +109,32 @@ def Plot_graph(G: ig.Graph, title: str=None, vertex_label: None=None, edge_width
     plt.suptitle(title)
     plt.show()
 
-def Analyze_graph(G: ig.Graph, source: None=None, destination: None=None, debug: bool=False):
-    """ Analyze the graph and return the alternating path, if there is one
+def Analyze_graph(G: ig.Graph, source: int=None, destination: int=None, debug: bool=False):
+    """ Analyze the graph and return the alternating path, if there is one.
         
-        Returns Paths {"path from source to destination", "alternating path"}
+        Parameters
+        ----------
+        G : ig.Graph
+            The graph to analyze.
+        source : int
+            The index of the source vertex in the graph G.
+        destionation : int
+            The index of the destination/target vertex in the graph G.
+        debug : bool
+            Provide information about graph analysis to verify things are working correctly.
+            Prints 
+                - Graph G
+                - Cut_vertices
+                - Vertices incoming to cut-vertex
+                - Connection sets
+                - Intersection sets
+                - Path taken from meta-graph H
+        
+        Returns 
+        ----------
+        Paths : dict()
+            - Path from source to destination
+            - Alternating path
     """
     NUM_V = G.vcount()
     V_ordered = G.topological_sorting(mode='out') # Place the vertices in topoligocal order
@@ -190,7 +212,7 @@ def Analyze_graph(G: ig.Graph, source: None=None, destination: None=None, debug:
     if debug == True:
         print(f"{G}\n")
         print(f"Cut-vertices: {cut_vertices}\n")
-        print(f"Incoming to cut vertex: {in_cut}\n")
+        print(f"Incoming to cut-vertex: {in_cut}\n")
         for i in range(NUM_V):
             print(f"Connect set {i}: {Connectivity_sets[i]}")
         print("\n")

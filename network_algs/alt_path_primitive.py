@@ -139,7 +139,7 @@ def get_intersectionSet_hEdges(Connectivity_sets: list, in_cut_d: list, NUM_V):
 
 def Func_1(G: ig.Graph, source: int, dest: int):
     """
-    For each cut vertex detemine if an alternating paths exists.
+    For each cut vertex determine if an alternating paths exists.
 
     Parameters
     ----------

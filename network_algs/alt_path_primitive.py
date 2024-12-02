@@ -2,6 +2,7 @@ import random as rd
 import igraph as ig
 import matplotlib.pyplot as plt
 import numpy as np
+from copy import deepcopy
 
 # test
 # class SecretSharingPrimitive(ig.Graph):
@@ -108,6 +109,89 @@ def Plot_graph(G: ig.Graph, title: str=None, vertex_label: None=None, edge_width
     )
     plt.suptitle(title)
     plt.show()
+
+def del_cut_edges(G: ig.Graph, cut_vertex: int):
+        G_tmp = G.copy()
+        in_cut = G.neighbors(cut_vertex, mode='in')
+        out_cut = G.neighbors(cut_vertex, mode='out')
+        rm_edges_in = [(i, cut_vertex) for i in in_cut]
+        rm_edges_out = [(cut_vertex, i) for i in out_cut]
+        rm_edges = rm_edges_in + rm_edges_out
+        G_tmp.delete_edges(rm_edges)
+        return G_tmp
+
+def get_intersectionSet_hEdges(Connectivity_sets: list, in_cut_d: list, NUM_V):
+    # Check for intersection bewtween vertex sets, also add edges between sets that intersect
+    edges_H = []
+    Intersection_sets = [[] for i in range(NUM_V)]
+    for i in in_cut_d:
+        for j in in_cut_d:
+            intersect = intersection(Connectivity_sets[i], Connectivity_sets[j])
+            if len(intersect) > 0 and (i != j):
+                # if V_ordered.index(i) < V_ordered.index(j): # topologial order may not remain
+                if (in_cut_d.index(j), in_cut_d.index(i)) in edges_H:
+                    continue
+                else:
+                    edges_H.append((in_cut_d.index(i), in_cut_d.index(j)))
+                d = (j, intersect)
+                Intersection_sets[i].append(d)
+    return Intersection_sets, edges_H
+
+def Func_1(G: ig.Graph, source: int, dest: int):
+    """
+    For each cut vertex detemine if an alternating paths exists.
+
+    Parameters
+    ----------
+    G : ig.Graph
+        Graph being analyzed
+    source : int
+        The source vertex
+    dest : int
+        The destination or target vertex
+    
+    Return
+    ------
+    P_alt_exists : list
+        List of tuples of the form (cut-vertex, bool). If alternating path does not exist for a cut-vertex, cv, then tuple 
+        entry is (cv, False), otherwise entry is (cv, True)
+
+    """
+    # Find the cut vertices and place them in a list
+    NUM_V = G.vcount()
+    V_sort = G.topological_sorting(mode="out")
+    cut_vertices = get_Cut_Vertices(G, V_sort.index(source))
+
+    P_alt_exists = []
+
+    # remove all edges connected to the cut vertex (assuming only 1 cut vertex)
+    for vert in cut_vertices:
+        G_tmp = del_cut_edges(G, vert)
+        
+        # add the destination to list containing vertices in-coming to the cut vertex
+        in_cut_d = G.neighbors(vert, mode='in')
+        in_cut_d.append(dest)
+        
+        Connectivity_sets = get_Connect_Sets(G_tmp)
+        Intersection_sets = [[] for i in range(NUM_V)]
+        edges_H = []
+        
+        # Check for intersection bewtween vertex sets, also add edges between sets that intersect
+        Intersection_sets, edges_H = get_intersectionSet_hEdges(Connectivity_sets, in_cut_d, NUM_V)
+
+        # Now that we have intersection sets, make a meta graph H and find a path
+        # By design, first element in H is the source and last element in H is the destination
+        num_vertices_H = len(in_cut_d)
+        H = ig.Graph(num_vertices_H, edges_H, directed=False)
+
+        # Get a shortest path in the graph H.
+        P_alt_H = H.get_shortest_paths(source, in_cut_d.index(dest))[0]
+        if len(P_alt_H) == 0:
+            P_alt_exists.append(vert, False)
+        else:
+            P_alt_exists.append((vert, True))
+
+    return P_alt_exists
 
 def Analyze_graph(G: ig.Graph, source: int=None, destination: int=None, debug: bool=False):
     """ Analyze the graph and return the alternating path, if there is one.

@@ -11,12 +11,20 @@ from copy import deepcopy
 
 # It would probably be better to add most of these functions as methods to a new class that inherits from ig.Graph
 def gen_DAG(NUM_V: int, p: float=0.5):
-    """Simple function for generating a random Directed Acyclic Graph (DAG).
-            
-            n -> Number of vertices in 
-                graph
-            p -> probability of connecting two vertices (v1, v2) 
-                where v2 is of higher topographical order
+    """ A simple function for generating a random Directed Acyclic Graph (DAG).
+
+        Paramteres
+        ----------
+        n : int
+            The number of vertices in the graph.
+        p : float
+            The probability of connecting two vertices (v1, v2) 
+            where v2 is of higher topographical order.
+        
+        Returns
+        -------
+        G : ig.Graph
+            A DAG graph.
     """
     edges = []
     for i in range(NUM_V-1):
@@ -30,8 +38,15 @@ def get_Connect_Sets(G: ig.Graph):
     """Creates a set for each vertex. These sets contain all of the vertices 
         that are connected to a specific vertex. For simplicity, the vertex 
         itself is included in its own set.
-            
-            G -> The graph to be analyzed
+
+        Paramters
+        ---------
+        G : ig.Graph 
+            The graph to be analyzed
+
+        Return
+        ------
+        Connectivity_sets : list
     """
     NUM_V = G.vcount()
     V_ordered = G.topological_sorting(mode='out')
@@ -46,33 +61,42 @@ def get_Connect_Sets(G: ig.Graph):
                 Connectivity_sets[V_ordered[j]] = list(set(Connectivity_sets[V_ordered[j]]))
     return Connectivity_sets
 
-def get_Cut_Vertices(G: ig.Graph, source_index: int, destination_index: int=None):
+def get_Cut_Vertices(G: ig.Graph, source_index: int, target_index: int=None):
     """Find all cut vertices in a DAG graph. Returns a list of these vertices.
 
-        @keyword G: The graph to be 
-            analyzed.
-        @keyword source_index: The index of the source in 
-            the topologically sorted vertex list.
-        @keyword destination_index: Topological index of the destination
+        Paramters
+        ---------
+        G : ig.Graph 
+            The graph to be analyzed.
+        source_index : int 
+            The index of the source in the topologically sorted vertex list.
+        target_index : int 
+            Topological index of the target
+
+        Returns
+        -------
+        cut_vertices : list
+            A list containing the cut-vertices for a source and target.
+            Returns an empty list if vertices are not connected of not cut-vertex exists.
     """
     NUM_V = G.vcount()
     V_ordered = G.topological_sorting(mode='out')
     cut_vertices = []
     source = V_ordered[source_index]
     
-    # set source and destination
-    if destination_index == None:
-        destination = V_ordered[-1]
+    # set source and target
+    if target_index == None:
+        target = V_ordered[-1]
     else:
-        destination = V_ordered[destination_index]
+        target = V_ordered[target_index]
 
-    # check if source and destination are already directly connected
-    if G.are_adjacent(source, destination):
+    # check if source and target are already directly connected
+    if G.are_adjacent(source, target):
         print("Source and target are directly connected.\nNo network scheme needed.")
         return cut_vertices
     
     # check if source and desition are connected at all
-    if G.vertex_connectivity(source, destination, neighbors="ignore") == 0:
+    if G.vertex_connectivity(source, target, neighbors="ignore") == 0:
         print("Source is not connected to target.")
         print("Invalid graph for algorithm\n")
         return cut_vertices
@@ -84,16 +108,16 @@ def get_Cut_Vertices(G: ig.Graph, source_index: int, destination_index: int=None
         # compensate for graph resizing
         if V_ordered[i] < source:
             source = source - 1
-        if V_ordered[i] < destination:
-            destination = destination - 1
+        if V_ordered[i] < target:
+            target = target - 1
         
         # if s and d are no longer connected then V_ordered[i] is a cut-vertex, append to list
-        if G_tmp.vertex_connectivity(source, destination, neighbors="ignore") == 0:
+        if G_tmp.vertex_connectivity(source, target, neighbors="ignore") == 0:
             cut_vertices.append(V_ordered[i])
         
         # reset s and d compensation
         source = V_ordered[source_index]
-        destination = V_ordered[-1]
+        target = V_ordered[-1]
 
     del G_tmp
     return cut_vertices
@@ -104,11 +128,15 @@ def intersection(l1: list, l2: list):
     return list(set(l1).intersection(l2))
 
 def Plot_graph(G: ig.Graph, title: str=None, vertex_label: None=None, edge_width: None=0.8, edge_color: None=None, layout: str='kk'):
-    """Plot the graph and decide which layout to use.
-            G: Graph to 
-                plot
-            layout: The layout to use. 
-                Uses kk by default
+    """
+    Plot the graph and decide which layout to use.
+    
+    Parameters
+    ----------
+    G : ig.Graph
+        Graph to plot
+    layout : str
+        The layout to use.
     """
     fig, ax = plt.subplots(figsize=(10,6))
     ig.plot(G,
@@ -142,7 +170,6 @@ def get_intersectionSet_hEdges(Connectivity_sets: list, in_cut_d: list, NUM_V):
         for j in in_cut_d:
             intersect = intersection(Connectivity_sets[i], Connectivity_sets[j])
             if len(intersect) > 0 and (i != j):
-                # if V_ordered.index(i) < V_ordered.index(j): # topologial order may not remain
                 if (in_cut_d.index(j), in_cut_d.index(i)) in edges_H:
                     continue
                 else:
@@ -151,7 +178,7 @@ def get_intersectionSet_hEdges(Connectivity_sets: list, in_cut_d: list, NUM_V):
                 Intersection_sets[i].append(d)
     return Intersection_sets, edges_H
 
-def Func_1(G: ig.Graph, source: int, dest: int):
+def Func_1(G: ig.Graph, source: int, target: int):
     """
     For each cut vertex determine if an alternating paths exists.
 
@@ -161,11 +188,11 @@ def Func_1(G: ig.Graph, source: int, dest: int):
         Graph being analyzed
     source : int
         The source vertex
-    dest : int
-        The destination or target vertex
+    target : int
+        The target vertex
     
-    Return
-    ------
+    Returns
+    -------
     P_alt_exists : list
         List of tuples of the form (cut-vertex, bool). If alternating path does not exist for a cut-vertex, cv, then tuple 
         entry is (cv, False), otherwise entry is (cv, True)
@@ -182,9 +209,9 @@ def Func_1(G: ig.Graph, source: int, dest: int):
     for vert in cut_vertices:
         G_tmp = del_cut_edges(G, vert)
         
-        # add the destination to list containing vertices in-coming to the cut vertex
+        # add the target to list containing vertices in-coming to the cut vertex
         in_cut_d = G.neighbors(vert, mode='in')
-        in_cut_d.append(dest)
+        in_cut_d.append(target)
         
         Connectivity_sets = get_Connect_Sets(G_tmp)
         Intersection_sets = [[] for i in range(NUM_V)]
@@ -194,12 +221,12 @@ def Func_1(G: ig.Graph, source: int, dest: int):
         Intersection_sets, edges_H = get_intersectionSet_hEdges(Connectivity_sets, in_cut_d, NUM_V)
 
         # Now that we have intersection sets, make a meta graph H and find a path
-        # By design, first element in H is the source and last element in H is the destination
+        # By design, first element in H is the source and last element in H is the target
         num_vertices_H = len(in_cut_d)
         H = ig.Graph(num_vertices_H, edges_H, directed=False)
 
         # Get a shortest path in the graph H.
-        P_alt_H = H.get_shortest_paths(source, in_cut_d.index(dest))[0]
+        P_alt_H = H.get_shortest_paths(source, in_cut_d.index(target))[0]
         if len(P_alt_H) == 0:
             P_alt_exists.append(vert, False)
         else:
@@ -207,39 +234,40 @@ def Func_1(G: ig.Graph, source: int, dest: int):
 
     return P_alt_exists
 
-def Analyze_graph(G: ig.Graph, source: int=None, destination: int=None, debug: bool=False):
-    """ Analyze the graph and return the alternating path, if there is one.
+def Analyze_graph(G: ig.Graph, source: int=None, target: int=None, debug: bool=False):
+    """ 
+    Analyze the graph and return the alternating path, if there is one.
         
-        Parameters
-        ----------
-        G : ig.Graph
-            The graph to analyze.
-        source : int
-            The index of the source vertex in the graph G.
-        destionation : int
-            The index of the destination/target vertex in the graph G.
-        debug : bool
-            Provide information about graph analysis to verify things are working correctly.
-            Prints 
-                - Graph G
-                - Cut_vertices
-                - Vertices incoming to cut-vertex
-                - Connection sets
-                - Intersection sets
-                - Path taken from meta-graph H
-        
-        Returns 
-        ----------
-        Paths : dict()
-            - Path from source to destination
-            - Alternating path
+    Parameters
+    ----------
+    G : ig.Graph
+        The graph to analyze.
+    source : int
+        The index of the source vertex in the graph G.
+    target : int
+        The index of the target vertex in the graph G.
+    debug : bool
+        Provide information about graph analysis to verify things are working correctly.
+        Prints 
+            - Graph G
+            - Cut_vertices
+            - Vertices incoming to cut-vertex
+            - Connection sets
+            - Intersection sets
+            - Path taken from meta-graph H
+    
+    Returns 
+    -------
+    Paths : dict()
+        - Path from source to target
+        - Alternating path
     """
     NUM_V = G.vcount()
     V_ordered = G.topological_sorting(mode='out') # Place the vertices in topoligocal order
     
-    # setting up the destination and source if not set
-    if destination == None:
-        destination = V_ordered[-1] # For now, set the destination to the last topoligically ordered 
+    # setting up the target and source if not set
+    if target == None:
+        target = V_ordered[-1] # For now, set the target to the last topoligically ordered 
     if source == None:
         source = 0
         source_index = V_ordered.index(source)
@@ -256,9 +284,9 @@ def Analyze_graph(G: ig.Graph, source: int=None, destination: int=None, debug: b
     rm_edges = rm_edges_in + rm_edges_out
     G_tmp.delete_edges(rm_edges)
     
-    # add the destination to list containing vertices in-coming to the cut vertex
+    # add the target to list containing vertices in-coming to the cut vertex
     in_cut_d = in_cut.copy()
-    in_cut_d.append(destination)
+    in_cut_d.append(target)
 
     Connectivity_sets = get_Connect_Sets(G_tmp)
     Intersection_sets = [[] for i in range(NUM_V)]
@@ -278,7 +306,7 @@ def Analyze_graph(G: ig.Graph, source: int=None, destination: int=None, debug: b
                 Intersection_sets[i].append(d)
 
     # Now that we have intersection sets, make a meta graph H and find a path
-    # By design, first element in H is the source and last element in H is the destination
+    # By design, first element in H is the source and last element in H is the target
     num_vertices_H = len(in_cut_d)
     H = ig.Graph(num_vertices_H, edges_H, directed=False)
     H.vs["name"] = np.arange(0, num_vertices_H)
@@ -286,7 +314,7 @@ def Analyze_graph(G: ig.Graph, source: int=None, destination: int=None, debug: b
     H.vs[-1]["name"] = 'D'
 
     # Get a shortest path in the graph H.
-    P_alt_H = H.get_shortest_paths(source, in_cut_d.index(destination))[0]
+    P_alt_H = H.get_shortest_paths(source, in_cut_d.index(target))[0]
     if len(P_alt_H) == 0:
         print("No alternating path exists.\n")
 
@@ -303,8 +331,8 @@ def Analyze_graph(G: ig.Graph, source: int=None, destination: int=None, debug: b
                     P_alt.append(G_tmp.get_shortest_paths(i_set_tuple[1][0], P_alt_H_to_G_prev)[0]) # append the shortest path from an intersecting vertex to the current collider
                 P_alt.append(G_tmp.get_shortest_paths(i_set_tuple[1][0], P_alt_H_to_G)[0])    # append the shortest path from an intersecting vertex to the next collider
 
-    source_to_destination = G.get_shortest_paths(source, destination)[0]
-    Paths = {"Alternating path": P_alt, "Source to destination": source_to_destination}
+    source_to_target = G.get_shortest_paths(source, target)[0]
+    Paths = {"Alternating path": P_alt, "Source to target": source_to_target}
 
     # Print some debug info
     if debug == True:
@@ -320,7 +348,7 @@ def Analyze_graph(G: ig.Graph, source: int=None, destination: int=None, debug: b
         print(f"Graph-H Path: {P_alt_H}\n")
 
     print(f"Alternating path: {Paths['Alternating path']}\n")
-    print(f"Path to destination: {Paths['Source to destination']}\n")
+    print(f"Path to target: {Paths['Source to target']}\n")
 
     # Just for aesthetics
     # Want to make edges in alternating path bolded

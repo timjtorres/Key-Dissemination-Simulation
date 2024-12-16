@@ -46,41 +46,55 @@ def get_Connect_Sets(G: ig.Graph):
                 Connectivity_sets[V_ordered[j]] = list(set(Connectivity_sets[V_ordered[j]]))
     return Connectivity_sets
 
-def get_Cut_Vertices(G: ig.Graph, source_index: int):
+def get_Cut_Vertices(G: ig.Graph, source_index: int, destination_index: int=None):
     """Find all cut vertices in a DAG graph. Returns a list of these vertices.
 
         @keyword G: The graph to be 
             analyzed.
         @keyword source_index: The index of the source in 
             the topologically sorted vertex list.
+        @keyword destination_index: Topological index of the destination
     """
     NUM_V = G.vcount()
     V_ordered = G.topological_sorting(mode='out')
     cut_vertices = []
     source = V_ordered[source_index]
-    destination = V_ordered[-1]
+    
+    # set source and destination
+    if destination_index == None:
+        destination = V_ordered[-1]
+    else:
+        destination = V_ordered[destination_index]
 
+    # check if source and destination are already directly connected
     if G.are_adjacent(source, destination):
         print("Source and target are directly connected.\nNo network scheme needed.")
-        return
+        return cut_vertices
     
+    # check if source and desition are connected at all
     if G.vertex_connectivity(source, destination, neighbors="ignore") == 0:
         print("Source is not connected to target.")
         print("Invalid graph for algorithm\n")
-        return
+        return cut_vertices
     
     for i in range(source_index+1, NUM_V-1):
         G_tmp = G.copy()
         G_tmp.delete_vertices(V_ordered[i])
-        if V_ordered[i] < source: # compensate for graph resizing
+        
+        # compensate for graph resizing
+        if V_ordered[i] < source:
             source = source - 1
-        if V_ordered[i] < destination: # compensate for graph resizing
+        if V_ordered[i] < destination:
             destination = destination - 1
-        # 1 if connected else 0 
-        if G_tmp.vertex_connectivity(source, destination) == 0:
+        
+        # if s and d are no longer connected then V_ordered[i] is a cut-vertex, append to list
+        if G_tmp.vertex_connectivity(source, destination, neighbors="ignore") == 0:
             cut_vertices.append(V_ordered[i])
+        
+        # reset s and d compensation
         source = V_ordered[source_index]
         destination = V_ordered[-1]
+
     del G_tmp
     return cut_vertices
 

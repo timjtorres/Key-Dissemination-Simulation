@@ -174,8 +174,10 @@ def get_intersectionSet_hEdges(Connectivity_sets: list, in_cut_d: list, NUM_V):
                     continue
                 else:
                     edges_H.append((in_cut_d.index(i), in_cut_d.index(j)))
+                
                 d = (j, intersect)
                 Intersection_sets[i].append(d)
+   
     return Intersection_sets, edges_H
 
 def Func_1(G: ig.Graph, source: int, target: int):

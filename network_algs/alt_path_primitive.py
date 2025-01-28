@@ -371,10 +371,10 @@ def F2(G: ig.Graph, D: list):
     V_p = []
     V_m_D = [] # vertices in graph excluding targets, V \ D
     for s in V_sorted:
-            if all(G.vertex_connectivity(s, t, checks=False, neighbors='negative') != 0 for t in D if s != t):
-                    V_p.append(s)
-            if s not in D:
-                    V_m_D.append(s)
+        if all(G.vertex_connectivity(s, t, checks=False, neighbors='negative') != 0 for t in D if s != t):
+            V_p.append(s)
+        if s not in D:
+            V_m_D.append(s)
     NUM_V_p = len(V_p)
     print(V_p)
     
@@ -382,15 +382,15 @@ def F2(G: ig.Graph, D: list):
     M_SU = np.asmatrix( np.zeros((NUM_V_p, NUM_U)) )
 
     for s in V_p:
-            for u in V_m_D:
-                    s_index = V_p.index(s)
-                    u_index = V_m_D.index(u)
-                    M_SU[s_index, u_index] = 1 if all(F1(G, s, t, u) == 1 for t in D) else 0
+        for u in V_m_D:
+            s_index = V_p.index(s)
+            u_index = V_m_D.index(u)
+            M_SU[s_index, u_index] = 1 if all(F1(G, s, t, u) == 1 for t in D) else 0
     
     print(M_SU)
     for i in range(len(V_m_D)):
-            if np.sum(M_SU[:,i]) == 0:
-                    return False
+        if np.sum(M_SU[:,i]) == 0:
+            return False
             
     return True
 

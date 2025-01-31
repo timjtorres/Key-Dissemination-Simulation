@@ -10,6 +10,18 @@ from copy import deepcopy
 #         return self.vcount()
 
 # It would probably be better to add most of these functions as methods to a new class that inherits from ig.Graph
+
+class GraphKeyScheme(ig.Graph):
+    def __init__(self, n=0, edges=None, directed=False):
+        self.n = n
+        super().__init__(n=self.n, edges=None, directed=False)
+
+    def print_num_vertices(self):
+        print(f"num vertices: {self.n}")
+    
+
+
+
 def gen_DAG(NUM_V: int, p: float=0.5):
     """ 
     A simple function for generating a random Directed Acyclic Graph (DAG).
@@ -100,8 +112,7 @@ def get_Cut_Vertices(G: ig.Graph, source_index: int, target_index: int=None):
     
     # check if source and target are connected at all
     if G.vertex_connectivity(source, target, neighbors="ignore") == 0:
-        print("Source is not connected to target.")
-        print("Invalid graph for algorithm\n")
+        print("Source is not connected to target.\n")
         return cut_vertices
     
     for i in range(source_index+1, NUM_V-1):

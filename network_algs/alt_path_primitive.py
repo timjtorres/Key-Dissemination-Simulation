@@ -4,6 +4,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 # from copy import deepcopy
 
+####################################################
+# Deprecated
+####################################################
+
 
 def gen_DAG(NUM_V: int, p: float=0.5):
     """ 

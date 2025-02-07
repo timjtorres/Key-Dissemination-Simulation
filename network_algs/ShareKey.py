@@ -1,9 +1,9 @@
 import igraph as ig
 import numpy as np
-from ShareBase import *
+from .network_base import *
 
 class ShareKey:
-    def __init__(self, Graph: ShareBase, targets = None):
+    def __init__(self, Graph: ig.Graph, targets = None):
         self.Graph = Graph
         self.targets = targets
         self.topological_order = Graph.topological_sorting(mode='out')
@@ -13,6 +13,7 @@ class ShareKey:
         """
         Checks if a certain vertex can be used to securely transmit a message for a source to a target. The targets are predetermined.
         We are trying to find a set of sources that can disseminate a key to the targets.
+        This is Function 1 from our discussions.
 
         Parameters
         ----------
@@ -37,10 +38,10 @@ class ShareKey:
         if source == u:
             print("source == u\n")
             return 0
-        elif not self.Graph.is_cut_vertex(self.Graph, source, target, u):
+        elif not is_cut_vertex(self.Graph, source, target, u):
             print("not cut-vertex\n")
             return 1
-        elif self.Graph.alt_path_exists(source, target, u):
+        elif alt_path_exists(self.Graph, source, target, u):
             print("alt path exists\n")
             return 1
         print("otherwise\n")
@@ -49,6 +50,7 @@ class ShareKey:
     def does_scheme_exist(self):
         """
         Determines if a scheme for sharing a key exists for a network G.
+        This is Function 2 from our discussions.
 
         Parameters
         ----------
@@ -60,8 +62,8 @@ class ShareKey:
         True: If a scheme exists
         False: Otherwise
         """
-        NUM_V = self.NUM_V
-        NUM_POTENTIAL_CUTS = NUM_V - len(self.targets)
+
+        NUM_POTENTIAL_CUTS = self.NUM_V - len(self.targets)
         # find potential sources (vertices which are connected to all targets)
         V_potential_sources = []
         V_no_targets = [] # vertices in graph excluding targets, V \ D

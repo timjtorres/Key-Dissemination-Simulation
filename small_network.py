@@ -3,6 +3,7 @@ import random as rd
 import matplotlib.pyplot as plt
 import igraph as ig
 from network_algs import *
+# from network_algs.alt_path_primitive import *
 
 if __name__ == "__main__": 
     
@@ -21,9 +22,12 @@ if __name__ == "__main__":
      G.es["capacity"] = [1 for i in range(NUM_V)]
      G.vs["name"] = ["s", "u","$y_1$", "$y_2$", "$y_3$", 
                     "$y_4$", "$x_1$", "$x_2$", "$x_3$", "$x_4$", "d", "*"]
+     SS = ShareSecret(G, 0, 10)
+     Path = SS.get_alternating_path()
     
 
     #  print(f"{G.topological_sorting(mode='out')}")
-     print(F1(G, s, d, u))
-     P = Analyze_graph(G, debug=False)
-     # print(P)
+    #  print(F1(G, s, d, u))
+    #  P = Analyze_graph(G, debug=True)
+    
+     print(Path)

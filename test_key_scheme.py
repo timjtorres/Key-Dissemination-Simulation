@@ -21,8 +21,6 @@ def main():
         )
         plt.show()
 
-        K = GraphKeyScheme()
-
 
         # NUM_V = 7
         # s1, s2, u, w1, w2, d1, d2 = 0, 1, 2, 3, 4, 5, 6

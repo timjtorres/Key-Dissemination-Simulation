@@ -2,24 +2,7 @@ import random as rd
 import igraph as ig
 import matplotlib.pyplot as plt
 import numpy as np
-from copy import deepcopy
-
-# test
-# class SecretSharingPrimitive(ig.Graph):
-#     def num_vert(self):
-#         return self.vcount()
-
-# It would probably be better to add most of these functions as methods to a new class that inherits from ig.Graph
-
-class GraphKeyScheme(ig.Graph):
-    def __init__(self, n=0, edges=None, directed=False):
-        self.n = n
-        super().__init__(n=self.n, edges=None, directed=False)
-
-    def print_num_vertices(self):
-        print(f"num vertices: {self.n}")
-    
-
+# from copy import deepcopy
 
 
 def gen_DAG(NUM_V: int, p: float=0.5):
@@ -476,6 +459,7 @@ def Analyze_graph(G: ig.Graph, source: int=None, target: int=None, debug: bool=F
     P_alt_H = H.get_shortest_paths(source, in_cut_d.index(target))[0]
     if len(P_alt_H) == 0:
         print("No alternating path exists.\n")
+        return
 
     # Get the alternating path
     P_alt = []
@@ -484,8 +468,8 @@ def Analyze_graph(G: ig.Graph, source: int=None, target: int=None, debug: bool=F
         P_alt_H_to_G = in_cut_d[P_alt_H[i]]
         inter_tmp = Intersection_sets[P_alt_H_to_G_prev] # select the intersection set for vertex P_alt_H[i-1]
         for j in range( len(inter_tmp) ):
-            i_set_tuple = inter_tmp[j]          # choose the jth tuple in the intersection set
-            if i_set_tuple[0] == P_alt_H_to_G:    # check if the first element of the tuple (the vertex set) is equal to the next vertex in the alternating path
+            i_set_tuple = inter_tmp[j]              # choose the jth tuple in the intersection set
+            if i_set_tuple[0] == P_alt_H_to_G:      # check if the first element of the tuple (the vertex set) is equal to the next vertex in the alternating path
                 if P_alt_H_to_G_prev != source or len(P_alt_H) == 2:   # just to account for the first step (starting at the source)
                     P_alt.append(G_tmp.get_shortest_paths(i_set_tuple[1][0], P_alt_H_to_G_prev)[0]) # append the shortest path from an intersecting vertex to the current collider
                 P_alt.append(G_tmp.get_shortest_paths(i_set_tuple[1][0], P_alt_H_to_G)[0])    # append the shortest path from an intersecting vertex to the next collider

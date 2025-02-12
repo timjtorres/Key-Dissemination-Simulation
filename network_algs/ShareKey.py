@@ -1,6 +1,6 @@
 import igraph as ig
 import numpy as np
-from .network_base import *
+from .base_funcs import *
 
 class ShareKey:
     def __init__(self, Graph: ig.Graph, targets = None):

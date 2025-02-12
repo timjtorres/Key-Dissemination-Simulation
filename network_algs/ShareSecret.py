@@ -1,5 +1,5 @@
 import igraph as ig
-from .network_base import *
+from .base_funcs import *
 
 class ShareSecret:
     def __init__(self, Graph: ig.Graph, source: int, target: int):

@@ -79,12 +79,12 @@ def get_connect_sets(Graph: ig.Graph):
     for i, vertex in enumerate(V_ordered):
         connectivity_sets[vertex].append(vertex)                            # append vertex to its own set
         for rest_v in V_ordered[i+1:]:                                      # iterate throw the rest of the vertices in front of the current one
-            if Graph.are_adjacent(vertex, rest_v):                          # check if current vertex is adjacent to another vertex
-                connectivity_sets[rest_v].extend(connectivity_sets[vertex]) # append set of current vertex to other vertex, pass the set along
+            if Graph.are_adjacent(vertex, rest_v):                          # check if current vertex is adjacent to another succeeding vertex
+                connectivity_sets[rest_v].extend(connectivity_sets[vertex]) # append set of current vertex to succeeding vertex, i.e., pass the set along
         connectivity_sets[vertex] = list(set(connectivity_sets[vertex]))    # get rid of diplicates in sets
     return connectivity_sets
 
-def get_intersection_set_H_edges(Graph: ig.Graph, connectivity_sets: list, in_cut_d: list):
+def get_intersection_set_H_edges(Graph: ig.Graph, connectivity_sets: list, in_cut_source_target: list):
     """
     Generate the intersecting sets for the graph and create list connecting sets that intersect.
     
@@ -92,7 +92,7 @@ def get_intersection_set_H_edges(Graph: ig.Graph, connectivity_sets: list, in_cu
     ----------
     Connectivity_sets : list
         List of connect sets
-    in_cut_d : list
+    in_cut_source_target : list
         List with source + incoming vertices to cut vertex + destination/target
     
     Returns
@@ -107,12 +107,12 @@ def get_intersection_set_H_edges(Graph: ig.Graph, connectivity_sets: list, in_cu
     NUM_V = Graph.vcount()
     edges_H = []
     Intersection_sets = [[] for i in range(NUM_V)]
-    for i in in_cut_d:      # may be better to use enumerate
-        for j in in_cut_d:
+    for i in in_cut_source_target:      # may be better to use enumerate
+        for j in in_cut_source_target:
             intersect = intersection(connectivity_sets[i], connectivity_sets[j])
             if len(intersect) > 0 and (i != j):
-                if (in_cut_d.index(j), in_cut_d.index(i)) not in edges_H:
-                    edges_H.append((in_cut_d.index(i), in_cut_d.index(j)))
+                if (in_cut_source_target.index(j), in_cut_source_target.index(i)) not in edges_H:
+                    edges_H.append((in_cut_source_target.index(i), in_cut_source_target.index(j)))
                 Intersection_sets[i].append((j, intersect))
 
     return Intersection_sets, edges_H

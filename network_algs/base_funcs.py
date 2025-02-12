@@ -106,16 +106,16 @@ def get_intersection_set_H_edges(Graph: ig.Graph, connectivity_sets: list, in_cu
     # Check for intersection bewtween vertex sets, also add edges between sets that intersect
     NUM_V = Graph.vcount()
     edges_H = []
-    Intersection_sets = [[] for i in range(NUM_V)]
+    intersection_sets = [[] for i in range(NUM_V)]
     for i in in_cut_source_target:      # may be better to use enumerate
         for j in in_cut_source_target:
             intersect = intersection(connectivity_sets[i], connectivity_sets[j])
             if len(intersect) > 0 and (i != j):
                 if (in_cut_source_target.index(j), in_cut_source_target.index(i)) not in edges_H:
                     edges_H.append((in_cut_source_target.index(i), in_cut_source_target.index(j)))
-                Intersection_sets[i].append((j, intersect))
+                intersection_sets[i].append((j, intersect))
 
-    return Intersection_sets, edges_H
+    return intersection_sets, edges_H
 
 def alt_path_exists(Graph: ig.Graph, source, target, cut_vertex):
     """

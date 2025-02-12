@@ -9,7 +9,7 @@ class ShareSecret:
         self.topological_order = Graph.topological_sorting(mode='out')
         # self.paths = {}
 
-    def get_cut_vertices(self, source: int, target: int):
+    def get_cut_vertices(self):
         """
         Find all cut vertices in a DAG graph. Returns a list of these vertices.
 
@@ -28,16 +28,16 @@ class ShareSecret:
         """
 
         cut_vertices = []
-        source_i = self.topological_order.index(source)
-        target_i = self.topological_order.index(target)
+        source_i = self.topological_order.index(self.source)
+        target_i = self.topological_order.index(self.target)
 
         # check if source and target are already directly connected
-        if self.Graph.are_adjacent(source, target):
+        if self.Graph.are_adjacent(self.source, self.target):
             print("Source and target are directly connected.\nNo network scheme needed.")
             return cut_vertices
 
         # check if source and target are connected
-        if self.Graph.vertex_connectivity(source, target, neighbors="ignore") == 0:
+        if self.Graph.vertex_connectivity(self.source, self.target, neighbors="ignore") == 0:
             print("Source is not connected to target.\n")
             return cut_vertices
 
@@ -47,8 +47,8 @@ class ShareSecret:
             G_tmp.delete_vertices(u)
 
             # compensate for graph resizing
-            source_tmp = source - 1 if u < source else source
-            target_tmp = target - 1 if u < target else target
+            source_tmp = self.source - 1 if u < self.source else self.source
+            target_tmp = self.target - 1 if u < self.target else self.target
 
             # if s and t are no longer connected then u is a cut-vertex, append to list
             if G_tmp.vertex_connectivity(source_tmp, target_tmp, neighbors="ignore") == 0:
@@ -60,7 +60,7 @@ class ShareSecret:
     def get_alternating_path(self):
 
         # get all cut vertices between the source and target
-        cut_vertices = self.get_cut_vertices(self.source, self.target)
+        cut_vertices = self.get_cut_vertices()
 
         # check if any cut vertices exists or too many exist. This alorithm is only implemented for 1 cut vertex
         num_cut_vertices = len(cut_vertices)
@@ -73,7 +73,6 @@ class ShareSecret:
         in_cut_source_target.append(self.target)
         if self.source not in in_cut_source_target:
             in_cut_source_target.append(self.source)
-
         
         G_tmp = del_cut_edges(self.Graph, cut_vertices[0])   # create temporary graph which disconnects the cut vertex from the original graph
         connectivity_sets = get_connect_sets(G_tmp)     # with the cut vertex removed, get the connect sets

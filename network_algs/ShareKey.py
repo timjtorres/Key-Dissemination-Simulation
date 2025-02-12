@@ -3,7 +3,7 @@ import numpy as np
 from .base_funcs import *
 
 class ShareKey:
-    def __init__(self, Graph: ig.Graph, targets = None):
+    def __init__(self, Graph: ig.Graph, targets: list):
         self.Graph = Graph
         self.targets = targets
         self.topological_order = Graph.topological_sorting(mode='out')

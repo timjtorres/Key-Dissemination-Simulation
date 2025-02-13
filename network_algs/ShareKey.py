@@ -63,8 +63,7 @@ class ShareKey:
             - True: If a scheme exists
             - False: Otherwise
         """
-
-        NUM_POTENTIAL_CUTS = self.NUM_V - len(self.targets)
+        
         # find potential sources (vertices which are connected to all targets)
         V_potential_sources = []
         V_no_targets = [] # vertices in graph excluding targets, V \ D
@@ -73,8 +72,9 @@ class ShareKey:
                 V_potential_sources.append(s)
             if s not in self.targets:
                 V_no_targets.append(s)
+        
         NUM_POTENTIAL_SOURCES = len(V_potential_sources)
-        print(V_potential_sources)
+        NUM_POTENTIAL_CUTS = len(V_no_targets)
 
         # Initialize matrix of potential sources and potential cut vertices
         m_SU = np.asmatrix( np.zeros((NUM_POTENTIAL_SOURCES, NUM_POTENTIAL_CUTS)) )
@@ -86,10 +86,16 @@ class ShareKey:
                 u_index = V_no_targets.index(u)
                 m_SU[s_index, u_index] = 1 if all(self._u_does_not_learn(s, t, u) == 1 for t in self.targets) else 0
 
+        scheme_exists = True    # initially set this to True
+        
         # check if a vertex not in `targets` learns about the key
         for i in range(NUM_POTENTIAL_CUTS):
             if np.sum(m_SU[:,i]) == 0:
-                return False
-
-        print(m_SU)
-        return True
+                scheme_exists = False
+                break
+        
+        print(f"Vertex associated with row index: {V_potential_sources}")
+        print(f"Vertex associated with column index: {V_no_targets}")
+        print(f"{m_SU}\n")
+        
+        return scheme_exists

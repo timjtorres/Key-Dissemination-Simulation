@@ -15,16 +15,13 @@ class ShareSecret:
 
         Paramters
         ---------
-        source : int 
-            Number of source
-        target : int 
-            Number of target
+        - self
 
         Returns
         -------
-        cut_vertices : list
-            A list containing the cut-vertices for a source and target.
-            Returns an empty list if vertices are not connected or no cut-vertex exists.
+        - cut_vertices : list
+            - A list containing the cut-vertices for a source and target.
+              Returns an empty list if vertices are not connected or no cut-vertex exists.
         """
 
         cut_vertices = []
@@ -58,6 +55,21 @@ class ShareSecret:
         return cut_vertices
 
     def get_alternating_path(self):
+        """
+        Gets the alternating path for the graph used to initialize the graph for communication bewtween the initialized
+        source and target.
+
+        Parameters
+        ----------
+        - self : ShareSecret
+            - The current class instance
+
+        Returns
+        -------
+        - P_alt : list
+            - The alternating path
+        """
+        
 
         # get all cut vertices between the source and target
         cut_vertices = self.get_cut_vertices()
@@ -74,8 +86,8 @@ class ShareSecret:
         if self.source not in in_cut_source_target:
             in_cut_source_target.append(self.source)
         
-        G_tmp = del_cut_edges(self.Graph, cut_vertices[0])   # create temporary graph which disconnects the cut vertex from the original graph
-        connectivity_sets = get_connect_sets(G_tmp)     # with the cut vertex removed, get the connect sets
+        G_tmp = del_cut_edges(self.Graph, cut_vertices[0])      # create temporary graph which disconnects the cut vertex from the original graph
+        connectivity_sets = get_connect_sets(G_tmp)             # with the cut vertex removed, get the connect sets
         
         # get the intersection of the connect sets and the edges for meta graph H
         intersection_sets, edges_H = get_intersection_set_H_edges(G_tmp, connectivity_sets, in_cut_source_target)
@@ -115,6 +127,16 @@ class ShareSecret:
     def get_source_to_target_path(self):
         """
         Returns a path from the source to the target if it exists
+
+        Parameters
+        ----------
+        - self : ShareSecret
+            - The current class instance
+        
+        Returns
+        -------
+        - source_to_target : list
+            - The shortest path from the source to the target if it exists
         """
         source_to_target = self.Graph.get_shortest_paths(self.source, self.target)[0]
         

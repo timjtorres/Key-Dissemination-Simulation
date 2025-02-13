@@ -4,9 +4,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 # from copy import deepcopy
 
-####################################################
+#################################################################
 # Deprecated
-####################################################
+#
+# This file will be left here if anyone would like to 
+# use or incorporate some of the function in the future.
+################################################################
 
 
 def gen_DAG(NUM_V: int, p: float=0.5):
@@ -489,6 +492,7 @@ def Analyze_graph(G: ig.Graph, source: int=None, target: int=None, debug: bool=F
         for i in range(NUM_V):
             print(f"Connect set {i}: {Connectivity_sets[i]}")
         print("\n")
+        
         for i in range(NUM_V):
             print(f"Intersection set {i}: {Intersection_sets[i]}")
         print("\n")

@@ -149,26 +149,27 @@ def alt_path_exists(Graph: ig.Graph, source, target, cut_vertex):
     G_tmp = del_cut_edges(Graph, cut_vertex)
     
     # add the target to list containing vertices in-coming to the cut vertex
-    in_cut_d = Graph.neighbors(cut_vertex, mode='in')
-    in_cut_d.append(target)
+    in_cut_target = Graph.neighbors(cut_vertex, mode='in')
+    in_cut_target.append(target)
     
     # if the source isn't already included, append it to make things easier. 
     # Otherwise we would need to check for a supernode that contains the source when finding a path for network H
-    if source not in in_cut_d:
-         in_cut_d.append(source)
+    if source not in in_cut_target:
+         in_cut_target.append(source)
     Connectivity_sets = get_connect_sets(G_tmp)
     
     # Check for intersection bewtween vertex sets, also add edges between sets that intersect
-    Intersection_sets, edges_H = get_intersection_set_H_edges(Graph, Connectivity_sets, in_cut_d)
+    Intersection_sets, edges_H = get_intersection_set_H_edges(Graph, Connectivity_sets, in_cut_target)
     
     # Now that we have intersection sets, make a meta graph H and find a path
-    num_vertices_H = len(in_cut_d)
+    num_vertices_H = len(in_cut_target)
     H = ig.Graph(num_vertices_H, edges_H, directed=False)
     
     # Get a shortest path in the graph H.
-    P_alt_H = H.get_shortest_paths(in_cut_d.index(source), in_cut_d.index(target))[0]
+    P_alt_H = H.get_shortest_paths(in_cut_target.index(source), in_cut_target.index(target))[0]
     if len(P_alt_H) > 0:
         P_alt_exists = True
+    
     return P_alt_exists
     
 def intersection(l1: list, l2: list):

@@ -17,20 +17,20 @@ class ShareKey:
 
         Parameters
         ----------
-        self : ShareKey
-            Current class instance
-        source : int
-            The source vertex.
-        target : int
-            The target vertex.
-        u : int
-            A vertex that is possibly traversed during the communication from source to target.
+        - self : ShareKey
+            - Current class instance
+        - source : int
+            - The source vertex
+        - target : int
+            - The target vertex
+        - u : int
+            - A vertex that is possibly traversed during the communication from source to target.
 
         Returns
         -------
-        :int
-        1: If there exists an alternating path or u is not a cut vertex
-        0: If there does not exist an alternating path and u is a cut vertex, or the source is not connected to the target at all.
+        - :int
+            - 1: If there exists an alternating path or u is not a cut vertex
+            - 0: If there does not exist an alternating path and u is a cut vertex, or the source is not connected to the target at all
         """
 
         # if self.Graph.vertex_connectivity(source, target, neighbors="ignore") == 0:
@@ -54,13 +54,14 @@ class ShareKey:
 
         Parameters
         ----------
-        self: class ShareKey
-            Current class instance
+        - self: ShareKey
+            - Current class instance
 
         Returns
         -------
-        True: If a scheme exists
-        False: Otherwise
+        - :bool
+            - True: If a scheme exists
+            - False: Otherwise
         """
 
         NUM_POTENTIAL_CUTS = self.NUM_V - len(self.targets)

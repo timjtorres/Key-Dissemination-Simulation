@@ -12,8 +12,9 @@ def main():
         V_label1 = ["s1", "s2", "u1", "u2", "w1", "w2", "d1", "d2"]
         EDGES = [(s1, u1), (s1, d2), (s2, u2), (s2, d1), (u1, d1), (u2, d2), (w1, s1), (w1, d1), (w2, s2), (w2, d2)]
         G1 = ig.Graph(NUM_V, EDGES, directed=True)
+        targets = [6, 7]
 
-        K1 = ShareKey(G1, [6,7])
+        K1 = ShareKey(G1, targets)
         print(f"Scheme exists for network 1: {K1.does_scheme_exist()}\n")
 
 
@@ -25,8 +26,9 @@ def main():
         V_label2 = ["s1", "s2", "u1", "u2", "w1", "w2", "d1", "d2"]
         EDGES = [(s1, u), (s2, u), (u, d1), (u, d2), (w1, s1), (w1, d1), (w2, s2), (w2, d2)]
         G2 = ig.Graph(NUM_V, EDGES, directed=True)
+        targets = [5, 6]
 
-        K2 = ShareKey(G2, [5, 6])
+        K2 = ShareKey(G2, targets)
         print(f"Scheme exists for network 2: {K2.does_scheme_exist()}\n")
 
         # Plot the networks

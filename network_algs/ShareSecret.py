@@ -54,7 +54,7 @@ class ShareSecret:
         del G_tmp
         return cut_vertices
 
-    def get_alternating_path(self):
+    def get_alternating_path(self, Graph_H=False):
         """
         Gets the alternating path for the graph used to initialize the graph for communication bewtween the initialized
         source and target.
@@ -99,7 +99,7 @@ class ShareSecret:
         H = ig.Graph(H_NUM_V, edges_H)
         H.vs["name"] = range(H_NUM_V)
         H.vs[source_H]["name"] = 'S'
-        H.vs[target_H]["name"] = 'D'
+        H.vs[target_H]["name"] = 'T'
 
         # get a shortest path in the graph H
         P_alt_H = H.get_shortest_paths(source_H, target_H)[0]
@@ -122,7 +122,10 @@ class ShareSecret:
                         P_alt.append(G_tmp.get_shortest_paths(intersection_set_tuple[1][0], P_alt_H_to_G_curr)[0])  # append the shortest path from an intersecting vertex to the current collider
                     P_alt.append(G_tmp.get_shortest_paths(intersection_set_tuple[1][0], P_alt_H_to_G_next)[0])      # append the shortest path from an intersecting vertex to the next collider
 
-        return P_alt
+        if Graph_H:
+            return P_alt, H
+        else:
+            return P_alt
 
     def get_source_to_target_path(self):
         """

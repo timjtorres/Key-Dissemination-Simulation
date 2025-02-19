@@ -47,4 +47,6 @@ if __name__ == "__main__":
     t = G.topological_sorting(mode='out')[-1]
     S = ShareSecret(G, s, t)
     P_alt = S.get_alternating_path()
+    print(S.connectivity_sets)
+    print(S.intersection_sets)
     print(P_alt)

@@ -7,6 +7,8 @@ class ShareSecret:
         self.source = source
         self.target = target
         self.topological_order = Graph.topological_sorting(mode='out')
+        self.connectivity_sets = None   # allow user to access this set when computed in get_alternating_path()
+        self.intersection_sets = None   # allow user to access this set when computed in get_alternating_path()
         # self.paths = {}
 
     def get_cut_vertices(self):
@@ -87,10 +89,10 @@ class ShareSecret:
             in_cut_source_target.append(self.source)
         
         G_tmp = del_cut_edges(self.Graph, cut_vertices[0])      # create temporary graph which disconnects the cut vertex from the original graph
-        connectivity_sets = get_connect_sets(G_tmp)             # with the cut vertex removed, get the connect sets
+        self.connectivity_sets = get_connect_sets(G_tmp)        # with the cut vertex removed, get the connect sets
         
         # get the intersection of the connect sets and the edges for meta graph H
-        intersection_sets, edges_H = get_intersection_set_H_edges(G_tmp, connectivity_sets, in_cut_source_target)
+        self.intersection_sets, edges_H = get_intersection_set_H_edges(G_tmp, self.connectivity_sets, in_cut_source_target)
 
         # make meta graph H
         H_NUM_V = len(in_cut_source_target)
@@ -108,13 +110,14 @@ class ShareSecret:
         if len(P_alt_H) == 0:
             print("No alternating path exists.\n")
             return
+        print("Alternating path exists")
         
         P_alt = []  # list for alternating path
         
         for i in range( len(P_alt_H) - 1 ):
             P_alt_H_to_G_curr = in_cut_source_target[P_alt_H[i]]    # covert to current vertex in Graph using path from H
             P_alt_H_to_G_next = in_cut_source_target[P_alt_H[i+1]]  # covert to next vertex in Graph using path from H
-            intersection_tmp = intersection_sets[P_alt_H_to_G_curr] # intersection set for current vertex
+            intersection_tmp = self.intersection_sets[P_alt_H_to_G_curr] # intersection set for current vertex
             for j in range( len(intersection_tmp) ):
                 intersection_set_tuple = intersection_tmp[j]        # get tuple j in intersection set
                 if intersection_set_tuple[0] == P_alt_H_to_G_next:  # check if tuple j is the tuple associated with the next vertex 

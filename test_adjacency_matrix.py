@@ -43,10 +43,45 @@ def Gen_graph():
 if __name__ == "__main__": 
     
     G = Gen_graph()
+    NUM_V = G.vcount()
     s = 0
     t = G.topological_sorting(mode='out')[-1]
     S = ShareSecret(G, s, t)
-    P_alt = S.get_alternating_path()
-    print(S.connectivity_sets)
-    print(S.intersection_sets)
+    P_alt, H = S.get_alternating_path(Graph_H=True)
+    # print(S.connectivity_sets)
+    # print(S.intersection_sets)
     print(P_alt)
+
+    # Put alternating path edges in bold 
+    alt_edges = []
+    for i in range(len(P_alt)):
+        for j in range(len(P_alt[i]) - 1):
+            alt_edges.append((P_alt[i][j], P_alt[i][j+1]))
+    alt_edge_ids = G.get_eids(alt_edges)
+    edge_widths = [3 if i in alt_edge_ids else 1 for i in range(G.ecount())]
+    edge_colors = ["#000000" if i in alt_edge_ids else "#555555" for i in range(G.ecount())]
+
+    # Plot graph G and H
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6,6))
+    ax1.set_title("Graph G")
+    ax2.set_title("Graph H")
+    ig.plot(G,
+            layout='kk', 
+            target=ax1,
+            vertex_label_size=10.0,
+            vertex_label=[i for i in range(NUM_V)],
+            vertex_size=30,
+            edge_width=edge_widths,
+            edge_color=edge_colors,
+            edge_arrow_width=5
+    )
+    ig.plot(H,
+            layout='kk', 
+            target=ax2,
+            vertex_label_size=10.0,
+            vertex_label=H.vs["name"],
+            vertex_size=30,
+            edge_width=1,
+            edge_arrow_width=5
+    )
+    plt.show()

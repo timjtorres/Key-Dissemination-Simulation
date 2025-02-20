@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
-from network_algs import *
+import igraph as ig
 
+from network_algs import ShareKey
 
 def main():
 

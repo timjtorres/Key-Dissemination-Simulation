@@ -17,7 +17,7 @@ G = ig.Graph(NUM_V, EDGES, directed=True)   # create network
 G.vs["name"] = ["s", "u","$y_1$", "$y_2$", "$y_3$", 
                "$y_4$", "$x_1$", "$x_2$", "$x_3$", "$x_4$", "t", "*"]
 
-S = ShareSecret.ShareSecret(G, s, t)    # Initialize SecretShare class with network, source and target
+S = ShareSecret(G, s, t)                        # Initialize SecretShare class with network, source and target
 Path, H = S.get_alternating_path(Graph_H=True)  # Get the alternating path (and graph H for plotting)
 
 

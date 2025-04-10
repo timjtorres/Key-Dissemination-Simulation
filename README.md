@@ -17,22 +17,22 @@ Currently, this project only intends to implement secret sharing for one cut-ver
 
 ### Must
 
-- [x] Algorithm to find an alternating path
-- [x] Organize this project using best practices 
-  - https://docs.python-guide.org/writing/structure/
-- [ ] Provide documentation (want to organize project more before this)
-- [ ] Check ability to find alternating paths on various graphs
-  - [ ] Barabasi-Albert model
-  - [ ] Watts-Strogatz model
-  - [ ] Catalog of real-world graphs: 
-    - https://networks.skewed.de/
-    - http://konect.cc/
-- [x] Implement "matrix algorithm" that was discussed for finding if a `key` can be shared to N targets.
+* [x] Algorithm to find an alternating path
+* [x] Organize this project using best practices 
+  * https://docs.python-guide.org/writing/structure/
+* [x] Provide documentation
+* [x] Implement "matrix algorithm" that was discussed for finding if a `key` can be shared to N targets.
 
 ### Optional
 
-- [x] Implement primitives as classes. For example, make a class `SecretSharingPrimive` that inherits from `ig.Graph`. I think this may be a better way to organize things.
-- [ ] Determine scope of analysis. If we are working with very large networks, we may want to use a library with better performance. For example, `Graph-tool` or `Networkit`. Likely unnecessary. See [NetworkToolsBrainstorm.md](NetworkToolsBrainstorm.md)
+* [ ] Check ability to find alternating paths on various graphs
+  * [ ] Barabasi-Albert model
+  * [ ] Watts-Strogatz model
+  * [ ] Catalog of real-world graphs:
+    * https://networks.skewed.de/
+    * http://konect.cc/
+* [x] Implement primitives as classes. For example, make a class `SecretSharingPrimive` that inherits from `ig.Graph`. I think this may be a better way to organize things.
+* [ ] Determine scope of analysis. If we are working with very large networks, we may want to use a library with better performance. For example, `Graph-tool` or `Networkit`. Likely unnecessary. See [NetworkToolsBrainstorm.md](NetworkToolsBrainstorm.md)
 
 ## GitHub
 
